@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precision Temperature Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: #1e293b;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent-orange: #f97316;
+            --accent-blue: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --error-bg: rgba(239, 68, 68, 0.15);
+            --error-text: #f87171;
+            
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .converter-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 480px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #a5b4fc, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 1rem;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .error-banner {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+
+        .results-section h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .result-box {
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary);
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="converter-card">
+        <header>
+            <h1>TempConvert</h1>
+            <p>Convert seamlessly between Celsius, Fahrenheit & Kelvin</p>
+        </header>
+
+        <div id="errorBanner" class="error-banner"></div>
+
+        <form id="converterForm" onsubmit="handleConvert(event)">
+            <div class="form-group">
+                <label for="tempInput">Enter Temperature</label>
+                <div class="input-row">
+                    <input 
+                        type="text" 
+                        id="tempInput" 
+                        placeholder="e.g., 25" 
+                        autocomplete="off"
+                        required
+                    />
+                    <select id="unitInput">
+                        <option value="C">°C (Celsius)</option>
+                        <option value="F">°F (Fahrenheit)</option>
+                        <option value="K">K (Kelvin)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Convert</button>
+        </form>
+
+        <section class="results-section">
+            <h3>Converted Values</h3>
+            <div class="result-grid">
+                <div class="result-box">
+                    <div id="outputLabel1" class="result-label">Fahrenheit</div>
+                    <div id="outputValue1" class="result-value">--</div>
+                </div>
+                <div class="result-box">
+                    <div id="outputLabel2" class="result-label">Kelvin</div>
+                    <div id="outputValue2" class="result-value">--</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const ABSOLUTE_ZERO = {
+            C: -273.15,
+            F: -459.67,
+            K: 0
+        };
+
+        const form = document.getElementById('converterForm');
+        const inputField = document.getElementById('tempInput');
+        const unitDropdown = document.getElementById('unitInput');
+        const errorBanner = document.getElementById('errorBanner');
+
+        const outLabel1 = document.getElementById('outputLabel1');
+        const outValue1 = document.getElementById('outputValue1');
+        const outLabel2 = document.getElementById('outputLabel2');
+        const outValue2 = document.getElementById('outputValue2');
+
+        function clearResults() {
+            outValue1.textContent = '--';
+            outValue2.textContent = '--';
+        }
+
+        function displayError(message) {
+            errorBanner.textContent = message;
+            errorBanner.style.display = 'block';
+            clearResults();
+        }
+
+        function clearError() {
+            errorBanner.style.display = 'none';
+        }
+
+        function updateOutputLabels() {
+            const currentUnit = unitDropdown.value;
+            if (currentUnit === 'C') {
+                outLabel1.textContent = 'Fahrenheit (°F)';
+                outLabel2.textContent = 'Kelvin (K)';
+            } else if (currentUnit === 'F') {
+                outLabel1.textContent = 'Celsius (°C)';
+                outLabel2.textContent = 'Kelvin (K)';
+            } else if (currentUnit === 'K') {
+                outLabel1.textContent = 'Celsius (°C)';
+                outLabel2.textContent = 'Fahrenheit (°F)';
+            }
+        }
+
+        function convertTemperature(value, fromUnit) {
+            let tempC, tempF, tempK;
+
+            if (fromUnit === 'C') {
+                tempC = value;
+                tempF = (value * 9/5) + 32;
+                tempK = value + 273.15;
+            } else if (fromUnit === 'F') {
+                tempC = (value - 32) * 5/9;
+                tempF = value;
+                tempK = tempC + 273.15;
+            } else if (fromUnit === 'K') {
+                tempC = value - 273.15;
+                tempF = (tempC * 9/5) + 32;
+                tempK = value;
+            }
+
+            return {
+                C: parseFloat(tempC.toFixed(2)),
+                F: parseFloat(tempF.toFixed(2)),
+                K: parseFloat(tempK.toFixed(2))
+            };
+        }
+
+        function handleConvert(event) {
+            if (event) event.preventDefault();
+
+            const rawValue = inputField.value.trim();
+            const selectedUnit = unitDropdown.value;
+
+            clearError();
+
+            if (rawValue === '') {
+                displayError("Please enter a temperature value.");
+                return;
+            }
+
+            const numericValue = Number(rawValue);
+            if (isNaN(numericValue)) {
+                displayError("Invalid input: Please enter a numeric value (e.g. 37 or -12.5).");
+                return;
+            }
+
+            const minAllowed = ABSOLUTE_ZERO[selectedUnit];
+            if (numericValue < minAllowed) {
+                const suffix = selectedUnit === 'K' ? 'K' : `°${selectedUnit}`;
+                displayError(`Violation of physics: Input is below absolute zero (${minAllowed}${suffix}).`);
+                return;
+            }
+
+            const conversions = convertTemperature(numericValue, selectedUnit);
+
+            if (selectedUnit === 'C') {
+                outValue1.textContent = `${conversions.F} °F`;
+                outValue2.textContent = `${conversions.K} K`;
+            } else if (selectedUnit === 'F') {
+                outValue1.textContent = `${conversions.C} °C`;
+                outValue2.textContent = `${conversions.K} K`;
+            } else if (selectedUnit === 'K') {
+                outValue1.textContent = `${conversions.C} °C`;
+                outValue2.textContent = `${conversions.F} °F`;
+            }
+        }
+
+        inputField.addEventListener('input', () => {
+            if (inputField.value.trim() === '') {
+                clearError();
+                clearResults();
+            } else {
+                handleConvert();
+            }
+        });
+        
+        unitDropdown.addEventListener('change', () => {
+            updateOutputLabels();
+            if (inputField.value.trim() !== '') {
+                handleConvert();
+            }
+        });
+
+        updateOutputLabels();
+    </script>
+</body>
+</html>

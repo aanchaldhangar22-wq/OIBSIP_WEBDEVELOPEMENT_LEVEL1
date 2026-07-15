@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow — Simplify Your Workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================
+           1. CSS VARIABLES & SYSTEM RESET
+           ========================================== */
+        :root {
+            --primary: #4f46e5;       /* Modern Indigo */
+            --primary-hover: #4338ca;
+            --text-dark: #0f172a;     /* Deep Slate */
+            --text-light: #475569;    /* Muted Gray */
+            --bg-light: #ffffff;
+            --bg-alt: #f8fafc;        /* Off-white for section contrast */
+            --border-color: #e2e8f0;
+            --max-width: 1100px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* ==========================================
+           2. NAVIGATION BAR (Sticky)
+           ========================================== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .nav-cta:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ==========================================
+           3. HERO SECTION
+           ========================================== */
+        .hero {
+            padding: 7rem 1.5rem 5rem 1.5rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background-color: #eeebff;
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-headline {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-headline span {
+            color: var(--primary);
+        }
+
+        .hero-subheadline {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+
+        /* ==========================================
+           4. FEATURES SECTION (Grid Layout)
+           ========================================== */
+        .features {
+            background-color: var(--bg-alt);
+            padding: 6rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 4rem auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .features-grid {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--bg-light);
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border-color: #cbd5e1;
+        }
+
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background-color: #eeebff;
+            color: var(--primary);
+            border-radius: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* ==========================================
+           5. TESTIMONIALS SECTION
+           ========================================== */
+        .testimonials {
+            padding: 6rem 1.5rem;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .quote-text {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+        }
+
+        .profile-info h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .profile-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* ==========================================
+           6. FOOTER SECTION
+           ========================================== */
+        footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 4rem 1.5rem 3rem 1.5rem;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand {
+            flex: 1 1 300px;
+        }
+
+        .footer-logo {
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-desc {
+            font-size: 0.95rem;
+            max-width: 320px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 4rem;
+        }
+
+        .footer-col h5 {
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-col ul {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-col a {
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: #ffffff;
+        }
+
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* ==========================================
+           7. RESPONSIVE MEDIA QUERIES
+           ========================================== */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 5rem 1.5rem 3.5rem 1.5rem;
+            }
+
+            .hero-headline {
+                font-size: 2.25rem;
+                letter-spacing: -1px;
+            }
+
+            .hero-subheadline {
+                font-size: 1rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .nav-link {
+                display: none; /* Hide standard links to keep mobile bar neat */
+            }
+
+            .footer-links {
+                gap: 2rem;
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-dot"></span>FocusFlow
+            </a>
+            <nav class="nav-menu">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#cta" class="nav-cta">Get Started</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <span class="hero-tag">New Release: v2.0</span>
+            <h1 class="hero-headline">Clean up your workspace. <span>Focus on what matters.</span></h1>
+            <p class="hero-subheadline">
+                FocusFlow is a minimalist visual tool designed to organize your thoughts, orchestrate your team, and supercharge your daily productivity.
+            </p>
+            <a href="#cta" class="btn-primary">Start Free Trial</a>
+        </section>
+
+        <section id="features" class="features">
+            <div class="section-header">
+                <h2 class="section-title">Engineered for deep work</h2>
+                <p class="section-subtitle">Ditch the clutter. Experience tools configured specifically for high-execution individuals and minimalists.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✦</div>
+                    <h3 class="feature-name">Sleek Interface</h3>
+                    <p class="feature-desc">A dark-accented user interface stripped of distractors. It loads in milliseconds so you can start executing instantly.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-name">Dynamic Flow</h3>
+                    <p class="feature-desc">Map out workflows, tasks, and notes effortlessly. Seamlessly transition between structural grids and clean kanban layouts.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">☁</div>
+                    <h3 class="feature-name">Local-First Sync</h3>
+                    <p class="feature-desc">Everything operates directly inside your local cache for peak speeds. It syncs securely to the cloud when online.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="testimonials">
+            <div class="section-header">
+                <h2 class="section-title">Loved by operators</h2>
+                <p class="section-subtitle">Here is how developers, creators, and professionals are reclaiming their focus hours.</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="quote-text">"FocusFlow replaced three separate productivity applications for me. The visual hierarchy is perfectly tuned, and the loading speed is unmatched."</p>
+                    <div class="profile-container">
+                        <div class="profile-avatar">S</div>
+                        <div class="profile-info">
+                            <h4>Sarah Jenkins</h4>
+                            <p>Product Designer, Linear</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="quote-text">"I am incredibly picky about UI. This tool is beautiful, functional, and actually keeps me on track. The localized speed is incredibly satisfying."</p>
+                    <div class="profile-container">
+                        <div class="profile-avatar">M</div>
+                        <div class="profile-info">
+                            <h4>Marcus Chen</h4>
+                            <p>Founder, DevFlow</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="about">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span class="logo-dot" style="background-color: #ffffff;"></span>FocusFlow
+                </div>
+                <p class="footer-desc">Building intentional tools to help creators and builders focus on the things that shape tomorrow.</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                        <li><a href="#">Changelog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Social</h5>
+                    <ul>
+                        <li><a href="#">Twitter/X</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 FocusFlow Inc. All rights reserved.</p>
+            <p>Made for deep work.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
